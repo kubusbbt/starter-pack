@@ -75,8 +75,7 @@ gulp.task('webpack', function(done) {
 
 
 
-gulp.task('browser-sync', function() {
-    
+gulp.task('serve', function() {
     if( proxy === false ){
 	    browserSync.init({
 	        server: {
@@ -88,14 +87,12 @@ gulp.task('browser-sync', function() {
 	        proxy: proxy
 	    });
 	}
+
+	gulp.watch('./src/scss/**/*.scss', ['sass']).on('change', browserSync.reload);
+	gulp.watch('./src/**/*.js', ['webpack']).on('change', browserSync.reload);
+	gulp.watch('./**/*.html').on('change', browserSync.reload);
+	gulp.watch('./**/*.php').on('change', browserSync.reload);
 });
 
 
-
-gulp.task('watch', function () {
-	gulp.watch('./src/scss/**/*.scss', ['sass']);
-	gulp.watch('./src/**/*.js', ['webpack']);
-});
-
-
-gulp.task('default', ['watch']);
+gulp.task('default', ['serve']);
