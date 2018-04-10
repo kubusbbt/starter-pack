@@ -1,0 +1,21 @@
+{
+  "name": "cod3r",
+  "description": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.37",
+    "@babel/preset-env": "^7.0.0-beta.37",
+    "babel-loader": "^8.0.0-beta.0",
+    "browser-sync": "^2.23.6",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-if": "^2.0.2",
+    "gulp-sass": "^4.0.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "webpack": "^3.10.0"
+  },
+  "dependencies": {
+    "gulp-util": "^3.0.8",
+    "jquery": "^3.3.1"
+  }
+}

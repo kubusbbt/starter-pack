@@ -1,0 +1,113 @@
+header{
+    min-height: 86px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    z-index: 999;
+    width: 100%;
+    transition: .5s background;
+    
+    &.scroll{
+        background: rgba($color-blue, .8);
+    }
+
+    nav{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .hamburger {    
+        cursor: pointer;
+        display: block;
+        width: 35px;
+        position: relative;
+        z-index: 1000;
+        margin-right: 30px;
+        
+        span {
+            display: block;
+            height: 2px;
+            position: relative;
+            width: 100%;
+        
+            &:after{
+            content: '';
+            height: 2px;
+            background: #fff;
+            display: block;
+            position: absolute;
+            right: 0;
+            transition: all .3s ease;
+            }
+        }
+        
+        span:nth-child(2){
+            margin: 9px 0;
+        }
+        span:nth-child(1):after{
+            width: 35px - 5px;
+        }
+        span:nth-child(2):after{
+            width: 35px;
+        }
+        span:nth-child(3):after{
+            width: 35px - 15px;
+        }
+        
+        &:hover{
+            span:after{
+            width: 35px;
+            }
+        }
+    }
+
+    .nav-inner{
+        overflow: hidden;
+
+        ul{
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            font-family: $font-extra;
+            position: relative;
+            right: -100%;
+            transition: .5s all;
+            padding-right: 20px;
+    
+            li{
+                margin: 0 10px;
+                color: #fff;
+
+                a{
+                    text-decoration: none;
+                    color: inherit;
+                }
+            }
+        }
+    }
+
+    nav.open{
+        ul{
+            right: 0;
+        }
+        .hamburger{
+            span:after{
+                width: 35px;
+            }
+            span:nth-child(1):after {
+                transform: translateY(11px) rotateZ(45deg);
+            }
+            span:nth-child(2):after {
+                width: 0;
+                transform: translateX( - (35px / 2) );
+            }
+            span:nth-child(3):after {
+                transform: translateY(-11px) rotateZ(-45deg);
+            }
+        }
+    }
+
+}
