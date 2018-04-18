@@ -8,6 +8,7 @@ var webpack = require('webpack');
 var browserSync = require('browser-sync').create();
 var prefix = require('gulp-autoprefixer');
 var gulpif = require('gulp-if');
+var notify = require("gulp-notify");
 
 
 var proxy = false;
@@ -23,12 +24,16 @@ var style = {
 gulp.task('sass', function () {
   return gulp.src('src/scss/main.scss')
 	.pipe(sourcemaps.init())
-	.pipe(sass({outputStyle: style.outputStyle}).on('error', sass.logError))
+	.pipe(sass({outputStyle: style.outputStyle}).on('error', function(err){
+		notify().write(err);
+		this.emit('end');
+	}))
 	.pipe(prefix({
         browsers: ['last 3 versions']
     }))
 	.pipe(gulpif(style.sourcemap, sourcemaps.write()))
 	.pipe(gulp.dest('./dist/'));
+	// .pipe(notify({ message: 'SASS compile' }));
 });
 
 
