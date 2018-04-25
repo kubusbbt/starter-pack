@@ -2,7 +2,6 @@
  
 var gulp = require('gulp');
 var sass = require('gulp-sass');
-var gutil = require('gulp-util');
 var sourcemaps = require('gulp-sourcemaps');
 var webpack = require('webpack');
 var browserSync = require('browser-sync').create();
