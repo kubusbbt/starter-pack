@@ -11,6 +11,7 @@ var notify = require("gulp-notify");
 
 
 var proxy = false;
+var port = 3000;
 
 var style = {
 	outputStyle: 'compressed', // nested |compact | expanded | compressed
@@ -84,11 +85,13 @@ gulp.task('serve', function() {
 	    browserSync.init({
 	        server: {
 	            baseDir: "./"
-	        }
+	        },
+		port: port
 	    });
 	}else{
 	    browserSync.init({
-	        proxy: proxy
+	        proxy: proxy,
+		port: port
 	    });
 	}
 
