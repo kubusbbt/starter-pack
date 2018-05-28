@@ -102,4 +102,5 @@ gulp.task('serve', function() {
 });
 
 
-gulp.task('default', ['serve']);
+gulp.task('build', ['sass', 'webpack']);
+gulp.task('default', ['build', 'serve']);
