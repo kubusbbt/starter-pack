@@ -79,7 +79,7 @@ gulp.task('webpack', function(done) {
 });
 
 
-gulp.task('watch', function() {
+gulp.task('watchfile', function() {
     gulp.watch('./src/scss/**/*.scss', ['sass']);
     gulp.watch('./src/**/*.js', ['webpack']);
     gulp.watch('./**/*.html');
@@ -113,3 +113,4 @@ gulp.task('serve', function() {
 
 gulp.task('build', ['sass', 'webpack']);
 gulp.task('default', ['build', 'serve']);
+gulp.task('watch', ['build', 'watchfile']);
