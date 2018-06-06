@@ -11,7 +11,7 @@ var notify = require("gulp-notify");
 
 
 var proxy = false;
-var port = 3000;
+var port = 8000;
 
 var style = {
 	outputStyle: 'compressed', // nested |compact | expanded | compressed
