@@ -79,6 +79,14 @@ gulp.task('webpack', function(done) {
 });
 
 
+gulp.task('watch', function() {
+    gulp.watch('./src/scss/**/*.scss', ['sass']);
+    gulp.watch('./src/**/*.js', ['webpack']);
+    gulp.watch('./**/*.html');
+    gulp.watch('../**/*.php');
+    gulp.watch('../**/*.twig');
+});
+
 
 gulp.task('serve', function() {
     if( proxy === false ){
@@ -99,6 +107,7 @@ gulp.task('serve', function() {
 	gulp.watch('./src/**/*.js', ['webpack']).on('change', browserSync.reload);
 	gulp.watch('./**/*.html').on('change', browserSync.reload);
 	gulp.watch('./**/*.php').on('change', browserSync.reload);
+	gulp.watch('./**/*.twig').on('change', browserSync.reload);
 });
 
 
