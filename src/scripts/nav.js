@@ -5,10 +5,10 @@ export default function navComponent(){
     window.addEventListener('click', function(e){   
         if (hamburger.contains(e.target)){
             hamburger.classList.toggle('open');
-            document.body.classList.toggle('menuopen');
+            document.body.classList.toggle('menu-open');
         } else{
             hamburger.classList.remove('open');
-            document.body.classList.remove('menuopen');
+            document.body.classList.remove('menu-open');
         }
     });
 }
