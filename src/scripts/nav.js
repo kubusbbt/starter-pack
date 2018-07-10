@@ -1,5 +1,4 @@
-/* MENU COMPONENT */
-export default function menuComponent(){
+export default function navComponent(){
     var hamburger = document.querySelector('.nav-hamburger');
     var listItems = document.querySelector('.nav-items');
 
@@ -12,7 +11,4 @@ export default function menuComponent(){
             document.body.classList.remove('menuopen');
         }
     });
-
 }
-
-    /* END MENU COMPONENT */
