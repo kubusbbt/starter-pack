@@ -1,5 +1,13 @@
-// @import 'variables';
-// @import '../../node_modules/bootstrap/scss/bootstrap';
+@import 'variables';
+@import '../../node_modules/bootstrap/scss/bootstrap';
+
+
+// components
+@import 'buttons';
+@import 'header';
+
 @import 'root';
-// @import 'buttons';
-// @import 'header';
+
+// pages
+@import 'page-home';
+
