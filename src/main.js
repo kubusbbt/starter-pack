@@ -1,10 +1,10 @@
-import $ from 'jquery';
-import '../node_modules/popper.js/dist/popper.min.js';
-import '../node_modules/bootstrap';
+import $ from 'jquery'
+import menuComponent from './nav'
+// import '../node_modules/bootstrap';
 
+menuComponent();
 
-let test = 'jQuery works!';
 
 $(document).ready(function(){
-	console.log( test )
+
 })
