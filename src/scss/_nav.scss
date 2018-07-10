@@ -116,7 +116,7 @@ $hamburger-size: 35px;
     }   
 }
 
-body.menuopen{
+body.menu-open{
     .nav-items{
         transform: translateY(0) !important;
         transition: .5s transform;
