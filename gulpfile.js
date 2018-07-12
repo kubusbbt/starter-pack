@@ -10,7 +10,7 @@ var gulpif = require('gulp-if');
 var notify = require("gulp-notify");
 
 
-var proxy = false;
+var proxy = false; // 'http://localhost/'
 var port = 8000;
 
 var style = {
