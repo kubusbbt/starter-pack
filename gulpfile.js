@@ -111,6 +111,13 @@ gulp.task('serve', function() {
 });
 
 
+gulp.task('prod', function() {
+	style.sourcemap = false;
+});
+
+
 gulp.task('build', ['sass', 'webpack']);
 gulp.task('default', ['build', 'serve']);
 gulp.task('watch', ['build', 'watchfile']);
+
+gulp.task('production', ['prod', 'build']);
