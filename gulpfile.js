@@ -9,6 +9,8 @@ var prefix = require('gulp-autoprefixer');
 var gulpif = require('gulp-if');
 var notify = require("gulp-notify");
 
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+
 
 var proxy = false; // 'http://localhost/'
 var port = 8000;
@@ -47,17 +49,31 @@ gulp.task('webpack', function(done) {
 	module: {
 		rules: [
 			{
+		        test: /\.vue$/,
+		        loader: 'vue-loader'
+		    },
+		    {
+		        test: /\.css$/,
+		        use: [
+		          'vue-style-loader',
+		          'css-loader'
+		        ]
+		    },
+			{
 				test: /\.js$/,
 				exclude: /(node_modules|bower_components)/,
 				use: {
-				loader: 'babel-loader',
-				options: {
-					presets: ['@babel/preset-env']
-				}
+					loader: 'babel-loader',
+					options: {
+						presets: ['@babel/preset-env']
+					}
 				}
 			}
 		]
-  }
+  	},
+  	plugins: [
+		new VueLoaderPlugin()
+	],
   }, function(error) {
 	var pluginError;
 
@@ -77,7 +93,6 @@ gulp.task('webpack', function(done) {
 	}
   });
 });
-
 
 gulp.task('watchfile', function() {
     gulp.watch('./src/scss/**/*.scss', ['sass']);
