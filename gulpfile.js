@@ -8,6 +8,7 @@ var browserSync = require('browser-sync').create();
 var prefix = require('gulp-autoprefixer');
 var gulpif = require('gulp-if');
 var notify = require("gulp-notify");
+const image = require('gulp-image');
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
@@ -36,6 +37,13 @@ gulp.task('sass', function () {
 	.pipe(gulpif(style.sourcemap, sourcemaps.write()))
 	.pipe(gulp.dest('./dist/'));
 	// .pipe(notify({ message: 'SASS compile' }));
+});
+
+
+gulp.task('image', function () {
+  gulp.src('src/img/*')
+    .pipe(image())
+    .pipe(gulp.dest('dist/img'));
 });
 
 
@@ -97,9 +105,9 @@ gulp.task('webpack', function(done) {
 gulp.task('watchfile', function() {
     gulp.watch('./src/scss/**/*.scss', ['sass']);
     gulp.watch('./src/**/*.js', ['webpack']);
-    gulp.watch('./**/*.html');
-    gulp.watch('../**/*.php');
-    gulp.watch('../**/*.twig');
+    // gulp.watch('./**/*.html');
+    // gulp.watch('../**/*.php');
+    // gulp.watch('../**/*.twig');
 });
 
 
@@ -120,9 +128,9 @@ gulp.task('serve', function() {
 
 	gulp.watch('./src/scss/**/*.scss', ['sass']).on('change', browserSync.reload);
 	gulp.watch('./src/**/*.js', ['webpack']).on('change', browserSync.reload);
-	gulp.watch('./**/*.html').on('change', browserSync.reload);
-	gulp.watch('./**/*.php').on('change', browserSync.reload);
-	gulp.watch('./**/*.twig').on('change', browserSync.reload);
+	// gulp.watch('./**/*.html').on('change', browserSync.reload);
+	// gulp.watch('./**/*.php').on('change', browserSync.reload);
+	// gulp.watch('./**/*.twig').on('change', browserSync.reload);
 });
 
 
@@ -131,7 +139,7 @@ gulp.task('prod', function() {
 });
 
 
-gulp.task('build', ['sass', 'webpack']);
+gulp.task('build', ['sass', 'webpack', 'image']);
 gulp.task('default', ['build', 'serve']);
 gulp.task('watch', ['build', 'watchfile']);
 
