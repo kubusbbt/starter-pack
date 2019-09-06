@@ -9,6 +9,7 @@ var prefix = require('gulp-autoprefixer');
 var gulpif = require('gulp-if');
 var notify = require("gulp-notify");
 const image = require('gulp-image');
+const purgecss = require('gulp-purgecss')
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
@@ -20,8 +21,6 @@ var style = {
 	outputStyle: 'compressed', // nested |compact | expanded | compressed
 	sourcemap: true
 }
-
-
 
 
 gulp.task('sass', function () {
@@ -40,11 +39,26 @@ gulp.task('sass', function () {
 });
 
 
-gulp.task('image', function () {
+gulp.task('image', function (done) {
   gulp.src('src/img/**/*')
     .pipe(image())
     .pipe(gulp.dest('dist/img'));
+
+    done();
 });
+
+
+// usuwanie nieużywanych styli
+gulp.task('purgecss', () => {
+  return gulp
+    .src('./dist/main.css')
+    .pipe(
+      purgecss({
+        content: ['./**/*.html', './**/*.php', './dist/**/*.js']
+      })
+    )
+    .pipe(gulp.dest('dist/'))
+})
 
 
 gulp.task('webpack', function(done) {
@@ -102,6 +116,7 @@ gulp.task('webpack', function(done) {
   });
 });
 
+
 gulp.task('watchfile', function() {
     gulp.watch('./src/scss/**/*.scss', ['sass']);
     gulp.watch('./src/**/*.js', ['webpack']);
@@ -134,13 +149,31 @@ gulp.task('serve', function() {
 });
 
 
-gulp.task('prod', function() {
+gulp.task('prod', function(done) {
 	style.sourcemap = false;
+	done();
 });
 
 
-gulp.task('build', ['sass', 'webpack', 'image']);
-gulp.task('default', ['build', 'serve']);
-gulp.task('watch', ['build', 'watchfile']);
+gulp.task('message', function(done) {
+	console.log(`
 
-gulp.task('production', ['prod', 'build']);
+   *************************************************************
+   ** Przed wrzuceniem plików na serwer należy użyć polecenia **
+   **                    gulp production                      **
+   *************************************************************
+
+   - usunięcie sourcemap
+   - skompresowanie grafik
+   - usunięcie nieużywanych styli
+
+	`);
+	done();
+});
+
+
+gulp.task('build', gulp.series(['sass', 'webpack', 'image', 'message']));
+gulp.task('default', gulp.parallel(['build', 'serve']));
+gulp.task('watch', gulp.parallel(['build', 'watchfile']));
+
+gulp.task('production', gulp.series(['prod', 'build', 'purgecss']));
