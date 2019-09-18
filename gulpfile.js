@@ -1,67 +1,75 @@
 'use strict';
  
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var sourcemaps = require('gulp-sourcemaps');
-var webpack = require('webpack');
-var browserSync = require('browser-sync').create();
-var prefix = require('gulp-autoprefixer');
-var gulpif = require('gulp-if');
-var notify = require("gulp-notify");
+const gulp = require('gulp');
+const sass = require('gulp-sass');
+const sourcemaps = require('gulp-sourcemaps');
+const webpack = require('webpack');
+const browsersync = require('browser-sync').create();
+const prefix = require('gulp-autoprefixer');
+const gulpif = require('gulp-if');
+const notify = require("gulp-notify");
 const image = require('gulp-image');
 const purgecss = require('gulp-purgecss')
-
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 
-var proxy = false; // 'http://localhost/'
-var port = 8000;
+const proxy = false; // 'http://localhost/'
+const port = 8000;
 
-var style = {
-	outputStyle: 'compressed', // nested |compact | expanded | compressed
+const styleConfig = {
+	outputStyle: 'nested', // nested |compact | expanded | compressed
 	sourcemap: true
 }
 
 
-gulp.task('sass', function () {
-  return gulp.src('src/scss/main.scss')
-	.pipe(sourcemaps.init())
-	.pipe(sass({outputStyle: style.outputStyle}).on('error', function(err){
+// BrowserSync
+function browserSync(done) {
+    if( proxy === false ){
+	    browsersync.init({
+	        server: {
+	            baseDir: "./"
+	        },
+		port: port
+	    });
+	}else{
+	    browsersync.init({
+	        proxy: proxy,
+		port: port
+	    });
+	}
+
+  	done();
+}
+
+
+// BrowserSync Reload
+function browserSyncReload(done) {
+  browsersync.reload();
+  done();
+}
+
+
+// kompilacja sass
+function style(done) {
+  return gulp
+    .src('src/scss/main.scss')
+    .pipe(sourcemaps.init())
+	.pipe(sass({outputStyle: styleConfig.outputStyle}).on('error', function(err){
 		notify().write(err);
 		this.emit('end');
 	}))
 	.pipe(prefix({
         browsers: ['last 3 versions']
     }))
-	.pipe(gulpif(style.sourcemap, sourcemaps.write()))
-	.pipe(gulp.dest('./dist/'));
-	// .pipe(notify({ message: 'SASS compile' }));
-});
-
-
-gulp.task('image', function (done) {
-  gulp.src('src/img/**/*')
-    .pipe(image())
-    .pipe(gulp.dest('dist/img'));
+    .pipe(gulpif(styleConfig.sourcemap, sourcemaps.write()))
+    .pipe(gulp.dest('./dist/'));
 
     done();
-});
+}
 
 
-// usuwanie nieużywanych styli
-gulp.task('purgecss', () => {
-  return gulp
-    .src('./dist/main.css')
-    .pipe(
-      purgecss({
-        content: ['./**/*.html', './**/*.php', './dist/**/*.js']
-      })
-    )
-    .pipe(gulp.dest('dist/'))
-})
-
-
-gulp.task('webpack', function(done) {
+// kompilacja skryptów
+function script(done){
   webpack({
 	entry: './src/main.js',
 	output: {
@@ -114,49 +122,53 @@ gulp.task('webpack', function(done) {
 	  done();
 	}
   });
-});
+}
 
 
-gulp.task('watchfile', function() {
-    gulp.watch('./src/scss/**/*.scss', ['sass']);
-    gulp.watch('./src/**/*.js', ['webpack']);
-    // gulp.watch('./**/*.html');
-    // gulp.watch('../**/*.php');
-    // gulp.watch('../**/*.twig');
-});
+// optymalicacja zdjęć
+function images(done) {
+	gulp.src('src/img/**/*')
+    	.pipe(image())
+    	.pipe(gulp.dest('dist/img'));
+
+    done();
+}
 
 
-gulp.task('serve', function() {
-    if( proxy === false ){
-	    browserSync.init({
-	        server: {
-	            baseDir: "./"
-	        },
-		port: port
-	    });
-	}else{
-	    browserSync.init({
-	        proxy: proxy,
-		port: port
-	    });
-	}
+// usuwanie nieużywanych styli
+function clearCss(done) {
+	gulp.src('./dist/main.css')
+	    .pipe(
+	      purgecss({
+	        content: ['./**/*.html', './**/*.php', './dist/**/*.js']
+	      })
+	    )
+    	.pipe(gulp.dest('dist/'))
 
-	gulp.watch('./src/scss/**/*.scss', ['sass']).on('change', browserSync.reload);
-	gulp.watch('./src/**/*.js', ['webpack']).on('change', browserSync.reload);
-	// gulp.watch('./**/*.html').on('change', browserSync.reload);
-	// gulp.watch('./**/*.php').on('change', browserSync.reload);
-	// gulp.watch('./**/*.twig').on('change', browserSync.reload);
-});
-
-
-gulp.task('prod', function(done) {
-	style.sourcemap = false;
 	done();
-});
+}
 
 
-gulp.task('message', function(done) {
-	console.log(`
+// Watch files
+function watchFiles(done) {
+	gulp.watch("./src/scss/**/*.scss", gulp.series(style, browserSyncReload));
+	gulp.watch("./src/**/*.js", gulp.series(script, browserSyncReload));
+
+	done();
+}
+
+
+
+function prepareProduction(done) {
+	styleConfig.sourcemap = false;
+	styleConfig.outputStyle = 'compressed';
+
+	done();
+}
+
+
+function message(done){
+	console.log('\x1b[36m%s\x1b[0m', `
 
    *************************************************************
    ** Przed wrzuceniem plików na serwer należy użyć polecenia **
@@ -169,11 +181,20 @@ gulp.task('message', function(done) {
 
 	`);
 	done();
-});
+}
 
 
-gulp.task('build', gulp.series(['sass', 'webpack', 'image', 'message']));
-gulp.task('default', gulp.parallel(['build', 'serve']));
-gulp.task('watch', gulp.parallel(['build', 'watchfile']));
+const build = gulp.parallel(message, style, script);
+const watch = gulp.parallel(message, watchFiles, browserSync);
+const production = gulp.series(prepareProduction, build, clearCss, images);
 
-gulp.task('production', gulp.series(['prod', 'build', 'purgecss']));
+gulp.task('default', gulp.parallel(watch));
+
+exports.style = style;
+exports.script = script;
+exports.images = images;
+exports.clearCss = clearCss;
+
+exports.build = build;
+exports.watch = watch;
+exports.production = production;
