@@ -185,7 +185,8 @@ function message(done){
 
 
 const build = gulp.parallel(message, style, script);
-const watch = gulp.parallel(message, watchFiles, browserSync);
+const watch = gulp.parallel(message, watchFiles);
+const serve = gulp.parallel(message, watchFiles, browserSync);
 const production = gulp.series(prepareProduction, build, clearCss, images);
 
 gulp.task('default', gulp.parallel(watch));
@@ -197,4 +198,5 @@ exports.clearCss = clearCss;
 
 exports.build = build;
 exports.watch = watch;
+exports.serve = serve;
 exports.production = production;
