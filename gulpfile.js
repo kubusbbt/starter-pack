@@ -18,8 +18,9 @@ const port = 8000;
 
 const styleConfig = {
 	outputStyle: 'nested', // nested |compact | expanded | compressed
-	sourcemap: true
-}
+	sourcemap: true,
+    prefix: false
+};
 
 
 // BrowserSync
@@ -58,9 +59,10 @@ function style(done) {
 		notify().write(err);
 		this.emit('end');
 	}))
-	.pipe(prefix({
-        browsers: ['last 3 versions']
-    }))
+    // .pipe(prefix({
+    //     browsers: ['last 3 versions']
+    // }))'
+    .pipe(gulpif(styleConfig.prefix, prefix({browsers: ['last 3 versions']})))
     .pipe(gulpif(styleConfig.sourcemap, sourcemaps.write()))
     .pipe(gulp.dest('./dist/'));
 
@@ -153,6 +155,7 @@ function clearCss(done) {
 function watchFiles(done) {
 	gulp.watch("./src/scss/**/*.scss", gulp.series(style, browserSyncReload));
 	gulp.watch("./src/**/*.js", gulp.series(script, browserSyncReload));
+	gulp.watch("./src/**/*.vue", gulp.series(script, browserSyncReload));
 
 	done();
 }
@@ -161,6 +164,7 @@ function watchFiles(done) {
 
 function prepareProduction(done) {
 	styleConfig.sourcemap = false;
+	styleConfig.prefix = true;
 	styleConfig.outputStyle = 'compressed';
 
 	done();
@@ -175,6 +179,7 @@ function message(done){
    **                    gulp production                      **
    *************************************************************
 
+   - dorzucenie prefixów css
    - usunięcie sourcemap
    - skompresowanie grafik
    - usunięcie nieużywanych styli
